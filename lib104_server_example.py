@@ -136,8 +136,20 @@ def Conn_event(param, con, event):
       print(f"Connection deactivated {con}")
 
 
-def Raw_msg(param, con, msg, size, sent):
-  return 
+def Raw_msg(param, connection, p_msg, p_size, sent):
+  if sent == True:
+    #the library used has been modified that size is a pointer instead of an int, when data is send
+    size = int(p_size.contents.value)
+    print(f"SEND:{size}")
+  else:
+    #when data is received, size is actually a value(not a pointer), so a conversion has to be made
+    size = int.from_bytes(p_size, byteorder='little', signed=True)
+    print(f"RECV:{size},")
+  if size > 0:
+    char_array = (ctypes.c_ubyte * size).from_address(ctypes.addressof(p_msg.contents))
+    tt = bytearray(char_array)
+    print(' '.join(format(x, '02x') for x in tt))
+
 
 clockSyncHandler = CS101_ClockSynchronizationHandler(clock)
 interrogationHandler = CS101_InterrogationHandler(GI_h)
