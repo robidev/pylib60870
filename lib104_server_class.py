@@ -135,7 +135,7 @@ class IEC60870_5_104_server:
         print(f"Connection deactivated {con}")
 
 
-  def Raw_msg(self, param, connection, p_msg, p_size, sent):
+  def raw_msg(self, param, connection, p_msg, p_size, sent):
     if sent == True:
       #the library used has been modified that size is a pointer instead of an int, when data is send
       size = int(p_size.contents.value)
@@ -144,10 +144,13 @@ class IEC60870_5_104_server:
       #when data is received, size is actually a value(not a pointer), so a conversion has to be made
       size = int.from_bytes(p_size, byteorder='little', signed=True)
       print(f"RECV:{size},")
+
+    #size = -1 happens when raw_msg is called during a disconnect
     if size > 0:
       char_array = (ctypes.c_ubyte * size).from_address(ctypes.addressof(p_msg.contents))
       tt = bytearray(char_array)
       print(' '.join(format(x, '02x') for x in tt))
+
 
   def __init__(self, ip = "0.0.0.0"):
     self.clockSyncHandler = CS101_ClockSynchronizationHandler(self.clock)
@@ -155,7 +158,7 @@ class IEC60870_5_104_server:
     self.asduHandler = CS101_ASDUHandler(self.ASDU_h)
     self.connectionRequestHandler = CS104_ConnectionRequestHandler(self.Conn_req)
     self.connectionEventHandler = CS104_ConnectionEventHandler(self.Conn_event)
-    self.rawMessageHandler = CS104_SlaveRawMessageHandler(self.Raw_msg)
+    self.rawMessageHandler = CS104_SlaveRawMessageHandler(self.raw_msg)
 
     self.slave = CS104_Slave_create(100, 100)
     CS104_Slave_setLocalAddress(self.slave, ip)
