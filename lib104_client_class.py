@@ -88,9 +88,9 @@ class IEC60870_5_104_client:
         print("Connected!")
 
         CS104_Connection_sendStartDT(self.con)
-        time.sleep( 1 )
+        time.sleep( 5 )
         CS104_Connection_sendInterrogationCommand(self.con, CS101_COT_ACTIVATION, 1, IEC60870_QOI_STATION)
-        time.sleep( 1 )
+        time.sleep( 5 )
         sc = cast(SingleCommand_create(None, 5000, True, False, 0), InformationObject)
 
         print("Send control command C_SC_NA_1")
@@ -99,11 +99,11 @@ class IEC60870_5_104_client:
         InformationObject_destroy(sc);
 
         # Send clock synchronization command 
-        #struct sCP56Time2a newTime;
-        #CP56Time2a_createFromMsTimestamp(&newTime, Hal_getTimeInMs());
+        newTime = sCP56Time2a() 
+        CP56Time2a_createFromMsTimestamp(CP56Time2a(newTime), Hal_getTimeInMs())
 
         print("Send time sync command")
-        #CS104_Connection_sendClockSyncCommand(con, 1, &newTime);
+        CS104_Connection_sendClockSyncCommand(self.con, 1, CP56Time2a(newTime))
 
         time.sleep( 1 )
         CS104_Connection_sendStopDT(self.con)
