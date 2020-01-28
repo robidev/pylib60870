@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from lib60870 import *
+from .lib60870 import *
 import time
 
 class IEC60870_5_104_server:
