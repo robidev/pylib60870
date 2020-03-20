@@ -1,5 +1,5 @@
 # pylib60870
-This is a python wrapped server and client example of the lib60870 library. it is based on the exellent IEC 60870 library; 
+This is a python wrapped server and client example of the lib60870 library. it is based on the excellent IEC 60870 library; 
 https://github.com/mz-automation/lib60870. 
 
 A slightly modified version is included as binary, but its best to recompile the original library yourself. this can be done by downloading the library from https://github.com/mz-automation/lib60870, and issuing 
